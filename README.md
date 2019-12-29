@@ -15,6 +15,15 @@ https://www.liaoxuefeng.com/wiki/1016959663602400/1016959856222624
 ![Image text](https://github.com/LuffyLSX/auto-arknights/blob/master/readme/demo2.png)
 如图显示表示安装成功
 
+# 安装 tesseract 以及 pytesseract 模块
+tesseract 可用于ocr识别
+访问 https://github.com/UB-Mannheim/tesseract/wiki 下载并安装windows 安装包
+打开cmd输入
+```
+pip install pillow
+pip install pytesseract
+```
+
 # 如何使用
 
 *使用之前要先安装python-opencv*
