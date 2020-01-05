@@ -7,6 +7,7 @@ import os,time
 import cv2
 import random
 import pytesseract
+import winsound
 from PIL import Image
 
 def connect():
@@ -115,14 +116,27 @@ def sleepAccordingProgress(progress):
         sleeptime = 2
     print('sleep ', sleeptime, ' seconds')
     time.sleep(sleeptime)
+def beepAlert():
+    freq = 1500
+    duration = 1000
+    for i in range(5):
+        winsound.Beep(freq, duration)
+        time.sleep(0.5)
 
+def beepSuccess():
+    duration = 1000
+    freq = 300
+    for i in range(4):
+        winsound.Beep(freq, duration)
+        freq += 80
 def run(n):
     images = {
         'unknown':['start-go1', 'start-go2', 'end', 'level up', 'stone'],
-        'start-go1':['start-go2','stone'],
-        'start-go2':['end','level up'],
-        'end':['start-go1','level up'],
-        'stone':['start-go1']
+        'start-go1':['start-go2','stone','start-go1'],
+        'start-go2':['end','level up', 'start-go2'],
+        'end':['start-go1','level up', 'end'],
+        'stone':['start-go1', 'stone'],
+        'level up':['end', 'start-go1','level up']
         }
     round = 0
     # Image_to_position('start-go1')
@@ -131,9 +145,15 @@ def run(n):
     # while not Image_to_position('end'):
     #     time.sleep(5)
     current='unknown'
+    repeat = 0
     while True:
         screenshot()
         now = ''
+        repeat += 1
+        if repeat >=200:
+            print('长时间未捕获正常状态，程序结束')
+            beepAlert()
+            break
         for image in images[current]:
             if Image_to_position(image, m = 0) != False:
                 print(image)
@@ -141,6 +161,7 @@ def run(n):
                 current=image
                 time.sleep(0.5)
                 click(center)
+                repeat = 0
                 break
                 
         if now == 'end':
@@ -161,6 +182,11 @@ if __name__ == '__main__':
     '''for i in range(int(input('输入刷图次数' + '\n'))):
         run()
         time.sleep(3)'''
-    run(int(input('输入刷图次数' + '\n')))
+    try:
+        run(int(input('输入刷图次数' + '\n')))
+    except Exception as e:
+        print(e)
+        beepAlert()
     os.system('adb kill-server')
+    beepSuccess()
 
